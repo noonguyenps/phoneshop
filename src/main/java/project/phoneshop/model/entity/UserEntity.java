@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,12 +40,16 @@ public class UserEntity {
     private String nickName;
     @Column(name = "\"phone\"")
     private String phone;
+    @Column(name = "\"birthDate\"")
+    private Date birthDate;
     @Column(name = "\"img\"")
     private String img;
     @Column(name = "\"status\"")
     private boolean status;
     @Column(name = "\"active\"")
     private boolean active;
+    @Column(name = "\"country\"")
+    private String country;
     @Column(name = "\"createAt\"")
     private Date createAt;
     @Column(name = "\"updateAt\"")
@@ -57,10 +62,11 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "\"user_role\"", joinColumns = @JoinColumn(name = "\"user_id\""), inverseJoinColumns = @JoinColumn(name = "\"role_id\""))
     private Set<RoleEntity> roles;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<AddressEntity> listAddress;
     public UserEntity() {
     }
-
     public UserEntity(String phone,String password){
         this.phone = phone;
         this.password = password;
@@ -125,7 +131,18 @@ public class UserEntity {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
     public String getImg() {
         return img;
     }
@@ -188,5 +205,13 @@ public class UserEntity {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public List<AddressEntity> getAddress() {
+        return listAddress;
+    }
+
+    public void setAddress(List<AddressEntity> address) {
+        this.listAddress = address;
     }
 }

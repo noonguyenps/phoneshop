@@ -1,6 +1,8 @@
 package project.phoneshop.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.phoneshop.model.entity.RoleEntity;
@@ -34,13 +36,11 @@ public class UserServiceImpl implements UserService {
             return null;
         return user.get();
     }
-//
-//    @Override
-//    public List<UserEntity> getAllUser(int page, int size){
-//        Pageable paging = PageRequest.of(page, size);
-//        return userRepository.findAll(paging).toList();
-//    }
-//
+    @Override
+    public List<UserEntity> getAllUser(int page, int size){
+        Pageable paging = PageRequest.of(page, size);
+        return userRepository.findAll(paging).toList();
+    }
     @Override
     public UserEntity saveUser(UserEntity user, String roleName) {
         Optional<RoleEntity> role=roleRepository.findByName("USER");

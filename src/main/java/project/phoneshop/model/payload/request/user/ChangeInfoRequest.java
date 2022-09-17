@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -12,7 +14,7 @@ import lombok.Setter;
 public class ChangeInfoRequest {
     private String fullName;
     private String nickName;
-    private String birthDay;
+    private Date birthDate;
     private String gender;
     private String country;
 }

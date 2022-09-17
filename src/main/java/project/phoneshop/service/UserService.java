@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import project.phoneshop.model.entity.UserEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -11,7 +12,7 @@ import java.util.UUID;
 public interface UserService {
 //    UserEntity findByFullName(String fullname);
     UserEntity findById(UUID id);
-//    List<UserEntity> getAllUser(int page, int size);
+    List<UserEntity> getAllUser(int page, int size);
     UserEntity saveUser(UserEntity user,String roleName);
 //    Boolean existsByFullName(String fullname);
     UserEntity findByPhone(String phone);

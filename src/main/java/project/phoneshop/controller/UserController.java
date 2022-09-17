@@ -8,19 +8,20 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.phoneshop.handler.AuthorizationHeader;
 import project.phoneshop.mapping.UserMapping;
 import project.phoneshop.model.entity.UserEntity;
-import project.phoneshop.model.payload.request.user.AddNewUserRequest;
-import project.phoneshop.model.payload.request.user.ChangePasswordRequest;
+import project.phoneshop.model.payload.request.user.*;
 import project.phoneshop.model.payload.response.SuccessResponse;
+import project.phoneshop.service.ImageStorageService;
 import project.phoneshop.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 
@@ -31,6 +32,7 @@ public class UserController {
     private final UserService userService;
     @Autowired
     AuthorizationHeader authorizationHeader;
+    private final ImageStorageService imageStorageService;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse> registerAccount(@RequestBody @Valid AddNewUserRequest request) {
@@ -52,7 +54,7 @@ public class UserController {
         if(user != null){
             Map<String,Object> data = new HashMap<>();
             data.put("user",user);
-            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Profile User",data), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Profile User",data), HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -73,4 +75,76 @@ public class UserController {
             return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Change password successfully",null), HttpStatus.OK);
         }
     }
+    @PostMapping("/profile/uploadAvatar")
+    public ResponseEntity<SuccessResponse> uploadAvatar(HttpServletRequest request, @RequestPart MultipartFile file) throws Exception{
+        UserEntity user = authorizationHeader.AuthorizationHeader(request);
+        if(user==null)
+            throw new BadCredentialsException("User not found");
+        else{
+            if(!imageStorageService.isImageFile(file))
+                return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),"The file is not an image",null), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            String url = imageStorageService.saveAvatar(file,user.getPhone());
+            if(url.equals(""))
+                return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.NOT_FOUND.value(),"Upload Avatar Failure",null), HttpStatus.NOT_FOUND);
+            user.setImg(url);
+            userService.saveInfo(user);
+            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Upload Avatar successfully",null), HttpStatus.OK);
+        }
+    }
+    @PutMapping("/profile/changeInfo")
+    public ResponseEntity<SuccessResponse> changeInfo(HttpServletRequest request, @RequestBody @Valid ChangeInfoRequest changeInfoRequest) throws Exception{
+        UserEntity user = authorizationHeader.AuthorizationHeader(request);
+        if(user==null)
+            throw new BadCredentialsException("User not found");
+        else{
+            user = UserMapping.updateInfoUser(user,changeInfoRequest);
+            userService.saveInfo(user);
+            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Change Info successfully",null), HttpStatus.OK);
+        }
+    }
+    @PutMapping("/profile/changeEmail")
+    public ResponseEntity<SuccessResponse> changeEmail(HttpServletRequest request, @RequestBody @Valid ChangeEmailRequest changeEmailRequest) throws Exception{
+        UserEntity user = authorizationHeader.AuthorizationHeader(request);
+        if(user==null)
+            throw new BadCredentialsException("User not found");
+        else{
+            if(userService.findByEmail(changeEmailRequest.getEmail())!=null)
+                return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.FOUND.value(),"Email is already used",null), HttpStatus.FOUND);
+            user.setEmail(changeEmailRequest.getEmail());
+            userService.saveInfo(user);
+            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Change Email successfully",null), HttpStatus.OK);
+        }
+    }
+    @PutMapping("/profile/changePhone")
+    public ResponseEntity<SuccessResponse> changePhone(HttpServletRequest request, @RequestBody ChangePhoneRequest changePhoneRequest) throws Exception{
+        UserEntity user = authorizationHeader.AuthorizationHeader(request);
+        if(user==null)
+            throw new BadCredentialsException("User not found");
+        else{
+            if(userService.findByPhone(changePhoneRequest.getPhone())!=null ){
+                return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.FOUND.value(),"Phone is already used",null), HttpStatus.FOUND);
+            }
+            user.setPhone(changePhoneRequest.getPhone());
+            userService.saveInfo(user);
+            return new ResponseEntity<>(new SuccessResponse(true,HttpStatus.OK.value(),"Change Phone successfully",null), HttpStatus.OK);
+        }
+    }
+//    @GetMapping("/wishlist")
+//    public ResponseEntity<SuccessResponse> getWishlist(HttpServletRequest request) throws Exception{
+//        UserEntity user = authorizationHeader.AuthorizationHeader(request);
+//        if(user==null)
+//            throw new BadCredentialsException("User not found");
+//        else{
+//            List<ProductResponse> productResponseList = new ArrayList<>();
+//            for(ProductEntity product : user.getFavoriteProducts()){
+//                productResponseList.add(productService.productResponse(product));
+//            }
+//            SuccessResponse response=new SuccessResponse();
+//            response.setMessage("Get wishlist successfully");
+//            response.setSuccess(true);
+//            response.setStatus(HttpStatus.OK.value());
+//            response.getData().put("listProduct",productResponseList);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        }
+//    }
 }
