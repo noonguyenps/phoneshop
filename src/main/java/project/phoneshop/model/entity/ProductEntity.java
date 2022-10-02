@@ -47,6 +47,9 @@ public class ProductEntity {
     private Integer sellAmount;
     @Column(name = "\"create_at\"")
     private Date create;
+    @JsonIgnore
+    @OneToMany(mappedBy = "productCart",cascade = CascadeType.ALL)
+    private List<CartEntity> listCart;
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "cart",targetEntity = CartItemEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 //    private List<CartItemEntity> list;
@@ -167,6 +170,14 @@ public class ProductEntity {
 
     public void setAttributeOptionEntities(Set<AttributeOptionEntity> attributeOptionEntities) {
         this.attributeOptionEntities = attributeOptionEntities;
+    }
+
+    public List<CartEntity> getListCart() {
+        return listCart;
+    }
+
+    public void setListCart(List<CartEntity> listCart) {
+        this.listCart = listCart;
     }
 }
 

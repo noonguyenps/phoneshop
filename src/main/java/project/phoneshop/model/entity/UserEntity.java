@@ -65,6 +65,9 @@ public class UserEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<AddressEntity> listAddress;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userCart",cascade = CascadeType.ALL)
+    private List<CartEntity> listCart;
     public UserEntity() {
     }
     public UserEntity(String phone,String password){
@@ -213,5 +216,21 @@ public class UserEntity {
 
     public void setAddress(List<AddressEntity> address) {
         this.listAddress = address;
+    }
+
+    public List<AddressEntity> getListAddress() {
+        return listAddress;
+    }
+
+    public void setListAddress(List<AddressEntity> listAddress) {
+        this.listAddress = listAddress;
+    }
+
+    public List<CartEntity> getListCart() {
+        return listCart;
+    }
+
+    public void setListCart(List<CartEntity> listCart) {
+        this.listCart = listCart;
     }
 }

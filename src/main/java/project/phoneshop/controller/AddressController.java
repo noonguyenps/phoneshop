@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user/address")
@@ -70,7 +71,7 @@ public class AddressController {
     }
     @PutMapping("update/{id}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> updateUserAddress(@RequestBody @Valid InfoAddressRequest infoAddressRequest, @PathVariable("id") String id, HttpServletRequest request) throws Exception {
+    public ResponseEntity<SuccessResponse> updateUserAddress(@RequestBody @Valid InfoAddressRequest infoAddressRequest, @PathVariable("id") UUID id, HttpServletRequest request) throws Exception {
         UserEntity user = authorizationHeader.AuthorizationHeader(request);
         if(user==null)
             throw new BadCredentialsException("User not found");
@@ -87,7 +88,7 @@ public class AddressController {
     }
     @DeleteMapping("delete/{id}")
     @ResponseBody
-    public ResponseEntity<SuccessResponse> deleteAddress(@PathVariable("id") String id,HttpServletRequest request) throws Exception {
+    public ResponseEntity<SuccessResponse> deleteAddress(@PathVariable("id") UUID id, HttpServletRequest request) throws Exception {
         UserEntity user = authorizationHeader.AuthorizationHeader(request);
         if(user==null)
             throw new BadCredentialsException("User not found");

@@ -10,7 +10,9 @@ import java.util.UUID;
 @Component
 @Service
 public interface UserService {
-//    UserEntity findByFullName(String fullname);
+    int getCountUser();
+
+    //    UserEntity findByFullName(String fullname);
     UserEntity findById(UUID id);
     List<UserEntity> getAllUser(int page, int size);
     UserEntity saveUser(UserEntity user,String roleName);

@@ -146,6 +146,12 @@ public class ProductServiceImpl implements ProductService {
         return brand.getListProduct();
     }
     @Override
+    public void minusProduct(ProductEntity product, int quantity){
+        product.setInventory(product.getInventory()-quantity);
+        product.setSellAmount(product.getSellAmount() + quantity);
+        productRepository.save(product);
+    }
+    @Override
     public long countProduct() {
         return productRepository.count();
     }

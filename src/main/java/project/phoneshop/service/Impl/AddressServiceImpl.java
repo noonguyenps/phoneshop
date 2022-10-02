@@ -11,6 +11,7 @@ import project.phoneshop.service.AddressService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -20,7 +21,7 @@ public class AddressServiceImpl implements AddressService {
     final AddressTypeRepository addressTypeRepository;
 
     @Override
-    public AddressEntity findById(String id) {
+    public AddressEntity findById(UUID id) {
         Optional<AddressEntity> addressEntity= addressRepository.findById(id);
         if (addressEntity==null)
             return null;
@@ -43,7 +44,7 @@ public class AddressServiceImpl implements AddressService {
         return addressType.get();
     }
     @Override
-    public void deleteAddress(String id) {
+    public void deleteAddress(UUID id) {
         addressRepository.deleteById(id);
     }
 }

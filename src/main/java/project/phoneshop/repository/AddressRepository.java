@@ -5,10 +5,11 @@ import project.phoneshop.model.entity.AddressEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @EnableJpaRepositories
-public interface AddressRepository extends JpaRepository<AddressEntity,String> {
-    Optional<AddressEntity> findById(String id);
+public interface AddressRepository extends JpaRepository<AddressEntity, UUID> {
+    Optional<AddressEntity> findById(UUID id);
     @Override
     List<AddressEntity> findAll();
 }

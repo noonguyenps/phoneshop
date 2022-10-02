@@ -6,6 +6,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import java.util.UUID;
 
 @RestResource(exported = false)
 @Entity
@@ -20,7 +21,7 @@ public class AddressEntity {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "\"id\"")
-    private String id;
+    private UUID id;
     @Column(name = "\"full_name\"")
     private String fullName;
     @Basic
@@ -55,11 +56,11 @@ public class AddressEntity {
         this.user = user;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

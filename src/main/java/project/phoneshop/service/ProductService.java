@@ -40,5 +40,7 @@ public interface ProductService {
 
     List<ProductEntity> searchByBrand(BrandEntity brand);
 
+    void minusProduct(ProductEntity product, int quantity);
+
     long countProduct();
 }

@@ -19,16 +19,11 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     final UserRepository userRepository;
     final RoleRepository roleRepository;
-
-
-//    @Override
-//    public UserEntity findByFullName(String fullName) {
-//        Optional<UserEntity> user = userRepository.findByFullName(fullName);
-//        if(user.isEmpty())
-//            return null;
-//        return user.get();
-//    }
-//
+    @Override
+    public int getCountUser(){
+        List<UserEntity> listUser = userRepository.findAll();
+        return listUser.size();
+    }
     @Override
     public UserEntity findById(UUID uuid){
         Optional<UserEntity> user = userRepository.findById(uuid);
